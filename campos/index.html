@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerenciador de Usuários</title>
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    table, th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+</style>
+</head>
+<body>
+
+<h2>Gerenciador de Usuários</h2>
+
+<form id="userForm">
+    
+</form>
+
+<table id="userTable">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Editar</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Aqui serão inseridos os usuários -->
+    </tbody>
+</table>
+
+<script>
+    // Array para armazenar os usuários
+    let users = [];
+
+    // Função para adicionar um usuário
+    function addUser(name, email) {
+        users.push({ name, email });
+        renderUsers();
+    }
+
+    // Função para renderizar os usuários na tabela
+    function renderUsers() {
+        const tbody = document.querySelector('#userTable tbody');
+        tbody.innerHTML = '';
+
+        users.forEach(user => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${user.name}</td>
+                <td>${user.email}</td>
+                <td>
+                    <button onclick="editUser('${user.name}', '${user.email}')">Editar</button>
+                    <button onclick="deleteUser('${user.email}')">Excluir</button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // Função para editar um usuário
+    function editUser(name, email) {
+        const newName = prompt('Novo nome:', name);
+        const newEmail = prompt('Novo email:', email);
+
+        if (newName && newEmail) {
+            const index = users.findIndex(user => user.email === email);
+            if (index !== -1) {
+                users[index] = { name: newName, email: newEmail };
+                renderUsers();
+            }
+        }
+    }
+
+    // Função para excluir um usuário
+    function deleteUser(email) {
+        users = users.filter(user => user.email !== email);
+        renderUsers();
+    }
+
+    // Adiciona um evento de envio para o formulário de usuário
+    document.querySelector('#userForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const name = document.querySelector('#name').value;
+        const email = document.querySelector('#email').value;
+        addUser(name, email);
+        document.querySelector('#name').value = '';
+        document.querySelector('#email').value = '';
+    });
+
+    // Inicializa a tabela com alguns usuários de exemplo
+    addUser('', '');
+    addUser('Maria', 'maria@example.com');
+</script>
+
+</body>
+</html>
